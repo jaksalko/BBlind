@@ -58,14 +58,12 @@ class CheckApplyListAdapter(Data: ArrayList<CheckString>) : BaseAdapter() {
 
         //구매글들에 대한 정보들
 
-        val sub = convertView!!.findViewById<TextView>(R.id.Check_Subway)
-        val da = convertView.findViewById<TextView>(R.id.Check_Date)
+        val da = convertView!!.findViewById<TextView>(R.id.Check_Date)
         val ti = convertView.findViewById<TextView>(R.id.Check_Time)
         val num = convertView.findViewById<TextView>(R.id.Check_PersonNum)
 
 Log.d("checkcheck",position.toString())
 
-       sub.setText(CheckStringData[position].Subway!!)
         da.setText(CheckStringData[position].Date!!)
         ti.setText(CheckStringData[position].Time!!)
        num.setText(CheckStringData[position].Num!!)

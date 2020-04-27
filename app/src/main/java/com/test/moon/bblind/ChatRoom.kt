@@ -7,13 +7,13 @@ import android.content.Intent
 import android.icu.text.SimpleDateFormat
 import android.os.Build
 import android.os.Bundle
-import android.support.v4.app.Fragment
-import android.support.v7.app.AlertDialog
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
+import androidx.appcompat.app.AlertDialog
+import androidx.fragment.app.Fragment
 import com.google.firebase.database.*
 import java.util.*
 import kotlin.collections.ArrayList
@@ -83,10 +83,8 @@ class ChatRoom : Fragment() {
                         cd.ManMsg= p0.child(MainActivity.crd!!.ChatRoom[i]).child("Info").child("ChatRoomList").child("manMsg").getValue(true).toString()!!
                         cd.MeetDate= p0.child(MainActivity.crd!!.ChatRoom[i]).child("Info").child("ChatRoomList").child("meetDate").getValue(true).toString()!!
                         cd.PersonNum= p0.child(MainActivity.crd!!.ChatRoom[i]).child("Info").child("ChatRoomList").child("personNum").getValue(true).toString()!!
-                        cd.Subway= p0.child(MainActivity.crd!!.ChatRoom[i]).child("Info").child("ChatRoomList").child("subway").getValue(true).toString()!!
                         cd.WomanMsg= p0.child(MainActivity.crd!!.ChatRoom[i]).child("Info").child("ChatRoomList").child("womanMsg").getValue(true).toString()!!
 
-                        Log.d("zczc", cd.ChatRoomNum+"/"+cd.LastMsg+"/"+cd.ManMsg+"/"+cd.MeetDate+"/"+cd.PersonNum+"/"+cd.Subway+"/"+cd.WomanMsg)
 
                         al.add(cd!!)
 

@@ -10,7 +10,7 @@
       "client_info": {
         "mobilesdk_app_id": "1:558755465365:android:7e355205a690e3ee",
         "android_client_info": {
-          "package_name": "com.example.moon.bblind"
+          "package_name": "com.test.moon.bblind"
         }
       },
       "oauth_client": [

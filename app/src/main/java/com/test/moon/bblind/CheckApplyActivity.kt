@@ -3,17 +3,17 @@ package com.test.moon.bblind
 import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
-import android.support.v7.app.AlertDialog
-import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.View
 import android.widget.*
+import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.database.*
 import com.test.moon.bblind.MainActivity.Companion.activity
 import com.test.moon.bblind.MainActivity.Companion.checkapplylist
 import kotlinx.android.synthetic.main.activity_apply.*
 
-class CheckApplyActivity :AppCompatActivity()
+class CheckApplyActivity : AppCompatActivity()
 {
     var arr1 :String= String()
     var arr2 :String= String()
@@ -85,11 +85,11 @@ class CheckApplyActivity :AppCompatActivity()
 
             s1.add(MainActivity.checkapplylist!!.checklist!![i].split("/")[0])
             s2.add(MainActivity.checkapplylist!!.checklist!![i].split("/")[1])
-            s3.add(MainActivity.checkapplylist!!.checklist!![i].split("/")[2])
+
+            Log.d("wlgusdnzzz",s1.toString()+s2.toString())
 
 
-
-            ref.child("Apply").child("SubwayStation").child(s1[i]).child(s2[i]).child(MainActivity.Mysex!!).orderByChild("name").equalTo(MainActivity.Myuid!!).addListenerForSingleValueEvent(object: ValueEventListener {
+            ref.child("Apply").child(s1[i]).child(MainActivity.Mysex!!).orderByChild("name").equalTo(MainActivity.Myuid!!).addListenerForSingleValueEvent(object: ValueEventListener {
                 override fun onCancelled(p0: DatabaseError) {
 
 
@@ -100,8 +100,11 @@ class CheckApplyActivity :AppCompatActivity()
 
 
 
+                    Log.d("wlgusdnzzz",p0.toString())
                     v0 = p0.getValue(true).toString().split("{")[2]
 
+
+                    Log.d("wlgusdnzzz",v0.toString())
                     v1 = v0!!.split(",")[0]
                     v2 = v0!!.split(",")[1]
                     v3 = v0!!.split(",")[2]
@@ -120,7 +123,7 @@ class CheckApplyActivity :AppCompatActivity()
                     v7 = v7!!.split("=")[1]
 
 
-                    var cc: CheckString = CheckString(s1[i], s3[i]!!, v4!!+":00 ~ "+v5!!+":00", s2[i])
+                    var cc: CheckString = CheckString(s2[i]!!, v4!!+":00 ~ "+v5!!+":00", s1[i])
 
                     stringdata!!.add(cc)
 
@@ -144,14 +147,13 @@ class CheckApplyActivity :AppCompatActivity()
         lv!!.setOnItemLongClickListener(object: AdapterView.OnItemLongClickListener {
             override fun onItemLongClick(parent: AdapterView<*>?, view: View?, position: Int, id: Long): Boolean {
 
-                val alt_bld =AlertDialog.Builder(this@CheckApplyActivity)
+                val alt_bld = AlertDialog.Builder(this@CheckApplyActivity)
                 alt_bld!!.setMessage("매칭을 삭제하시겠습니까?").setCancelable(true).setPositiveButton("네",
                         object: DialogInterface.OnClickListener {
 
                             override fun onClick(p0: DialogInterface?, p1: Int) {
 
-                                val delquery: Query = ref.child("Apply").child("SubwayStation").child(s1[position+1])
-                                        .child(s2[position+1]).child(MainActivity.Mysex!!).orderByChild("name").equalTo(MainActivity.Myuid!!)
+                                val delquery: Query = ref.child("Apply").child(s1[position+1]).child(MainActivity.Mysex!!).orderByChild("name").equalTo(MainActivity.Myuid!!)
 
 
                                 delquery.addListenerForSingleValueEvent(object : ValueEventListener {
@@ -162,10 +164,10 @@ class CheckApplyActivity :AppCompatActivity()
 
                                         for (appleSnapshot in p0.getChildren()) {
 
-                                            if(appleSnapshot.child("date").getValue(true).toString().equals(s3[position+1])) {
+                                            if(appleSnapshot.child("date").getValue(true).toString().equals(s2[position+1])) {
 
                                                 appleSnapshot.getRef().removeValue()
-                                                val count = MainActivity.checkapplylist!!.checklist!!.indexOf(s1[position+1]+"/"+s2[position+1]+"/"+s3[position+1])
+                                                val count = MainActivity.checkapplylist!!.checklist!!.indexOf(s1[position+1]+"/"+s2[position+1])
 
                                                 MainActivity.checkapplylist!!.checklist!!.removeAt(count)
 

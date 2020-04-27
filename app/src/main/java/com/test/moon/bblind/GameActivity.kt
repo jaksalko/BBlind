@@ -1,17 +1,17 @@
 package com.test.moon.bblind
 
 import android.os.Bundle
-import android.support.design.widget.TabLayout
-import android.support.v4.app.Fragment
-import android.support.v4.app.FragmentManager
-import android.support.v4.app.FragmentStatePagerAdapter
-import android.support.v4.view.ViewPager
-import android.support.v7.app.AppCompatActivity
 import android.view.View
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.Toast
-import com.test.moon.bblind.databinding.ActivityMainBinding
+import androidx.appcompat.app.AppCompatActivity
+import androidx.databinding.DataBindingUtil.setContentView
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.FragmentStatePagerAdapter
+import androidx.viewpager.widget.ViewPager
+import com.google.android.material.tabs.TabLayout
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.database.DatabaseReference
@@ -20,6 +20,7 @@ import com.kakao.usermgmt.LoginButton
 import com.kakao.usermgmt.UserManagement
 import com.kakao.usermgmt.callback.LogoutResponseCallback
 import kotlinx.android.synthetic.main.activity_game.*
+import kotlinx.android.synthetic.main.lobby.view.*
 
 class GameActivity : AppCompatActivity()
 {
@@ -28,7 +29,6 @@ class GameActivity : AppCompatActivity()
     private var viewPager: ViewPager? = null
     private var tabLayout: TabLayout? = null
 
-
     override fun onCreate(savedInstanceState: Bundle?)
     {
 
@@ -36,11 +36,13 @@ class GameActivity : AppCompatActivity()
 
         setContentView(R.layout.activity_game)
 
+        viewPager = Game_Viewpager as ViewPager
 
+        setupViewPager(viewPager)
 
-        setupViewPager(Game_Viewpager)
+        tabLayout = Game_tabs as TabLayout
 
-       Game_tabs.setupWithViewPager(Game_Viewpager)
+        tabLayout!!.setupWithViewPager(viewPager)
         setupTabIcons()
 
 
@@ -50,7 +52,7 @@ class GameActivity : AppCompatActivity()
         for(i in 0..2) {
             val view1 = layoutInflater.inflate(R.layout.customtab, null) as View
             view1.findViewById<ImageView>(R.id.icon).setBackgroundResource(tabIcons[i])
-           Game_tabs!!.getTabAt(i)!!.setCustomView(view1)
+          tabLayout!!.getTabAt(i)!!.setCustomView(view1)
         }
 
     }
@@ -61,8 +63,8 @@ class GameActivity : AppCompatActivity()
         adapter.addFrag(ChatRoom(), "중반/무르익을때")
         adapter.addFrag(Store(), "퐈이어")
         //adapter.addFrag(heart(), "HEART")
-        Game_Viewpager!!.adapter = adapter
-        Game_Viewpager.offscreenPageLimit= 7         // 한번에 5개의 ViewPager를 띄우겠다 -> 성능향상
+        viewPager!!.adapter = adapter
+        viewPager!!.offscreenPageLimit= 7         // 한번에 5개의 ViewPager를 띄우겠다 -> 성능향상
     }    //ADAPT FRAGMENT
 
     ///////////////////////////////////// Adapter ///////////////////////////////////////////////////////////////

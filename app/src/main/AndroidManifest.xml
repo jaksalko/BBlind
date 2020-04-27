@@ -1,75 +1,86 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.test.moon.bblind">
-    <uses-permission android:name="com.android.vending.BILLING" />
 
+    <uses-permission android:name="com.android.vending.BILLING" />
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+
     <application
-        android:usesCleartextTraffic="true"
-        android:name = ".KakaoLoginApplication"
+        android:name=".GlobalApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme"
+        android:usesCleartextTraffic="true">
+        <activity
+            android:name=".activity_lobby2"
+            android:label="@string/title_activity_lobby2"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
+
         <uses-library
             android:name="org.apache.http.legacy"
             android:required="false" />
+
         <meta-data
-
             android:name="com.kakao.sdk.AppKey"
-
             android:value="@string/kakao_app_key" />
-        <activity android:name="com.test.moon.bblind.Loading">
+        <meta-data android:name="com.facebook.sdk.ApplicationId" android:value="@string/facebook_app_id"/>
+
+
+        <activity android:name=".Loading">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity>>
-        <activity android:name="com.test.moon.bblind.LobbyActivity">
-
-
         </activity>
-        <activity android:name="com.test.moon.bblind.LoginActivity">
-
+        <activity android:name=".LobbyActivity"></activity>
+        <activity android:name=".LoginActivity"></activity>
+        <activity android:name=".AlarmSetting" />
+        <activity android:name=".QnA" />
+        <activity android:name=".KakaoSignupActivity" />
+        <activity
+            android:name=".roulette"
+            android:theme="@android:style/Theme.Dialog" />
+        <activity
+            android:name=".RoulettePopup"
+            android:theme="@android:style/Theme.Dialog" />
+        <activity
+            android:name=".DeclarationPopup"
+            android:theme="@android:style/Theme.Dialog" />
+        <activity
+            android:name=".Declaration"
+            android:theme="@android:style/Theme.Dialog" />
+        <activity android:name=".Chat" />
+        <activity android:name=".CheckApplyActivity" />
+        <activity android:name=".MainActivity" android:exported="true"
+            android:configChanges= "keyboard|keyboardHidden|screenLayout|screenSize|orientation"
+            android:label="@string/app_name" >
+            <intent-filter> <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="@string/fb_login_protocol_scheme" />
+            </intent-filter>
         </activity>
-        <activity android:name="com.test.moon.bblind.AlarmSetting"></activity>
-        <activity android:name="com.test.moon.bblind.QnA"></activity>
-        <activity android:name="com.test.moon.bblind.KakaoSignupActivity"></activity>
-        <activity android:name="com.test.moon.bblind.roulette" android:theme="@android:style/Theme.Dialog">></activity>
-        <activity android:name="com.test.moon.bblind.RoulettePopup" android:theme="@android:style/Theme.Dialog">></activity>
-        <activity android:name="com.test.moon.bblind.DeclarationPopup" android:theme="@android:style/Theme.Dialog">></activity>
-        <activity android:name="com.test.moon.bblind.Declaration" android:theme="@android:style/Theme.Dialog">></activity>
-        <activity android:name="com.test.moon.bblind.Chat"></activity>
-        <activity android:name="com.test.moon.bblind.CheckApplyActivity"></activity>
-        <activity android:name="com.test.moon.bblind.MainActivity"></activity>
-
-        <activity android:name="com.test.moon.bblind.Account"></activity>
-        <activity android:name="com.test.moon.bblind.msg"></activity>
-        <activity android:name="com.test.moon.bblind.SubwayPopup" android:theme="@android:style/Theme.Dialog"></activity>
-
-
-
-
-        <activity android:name="com.test.moon.bblind.ApplyActivity"></activity>
-        <activity android:name="com.test.moon.bblind.GameActivity"></activity>
-
+        <activity android:name=".Account" />
+        <activity android:name=".license1" />
+        <activity android:name=".license2" />
+        <activity android:name=".msg" />
+        <activity
+            android:name=".SubwayPopup"
+            android:theme="@android:style/Theme.Dialog" />
+        <activity android:name=".ApplyActivity" />
+        <activity android:name=".GameActivity" />
 
         <service
-            android:name="com.test.moon.bblind.MyFirebaseMessagingService"
+            android:name=".MyFirebaseMessagingService"
             android:exported="false">
             <intent-filter>
-                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
-            </intent-filter>
-        </service>
-
-        <service
-            android:name="com.test.moon.bblind.MyFirebaseInstanceIDService">
-            <intent-filter>
-                <action android:name="com.google.firebase.INSTANCE_ID_EVENT"/>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
     </application>

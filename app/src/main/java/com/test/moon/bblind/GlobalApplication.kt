@@ -3,7 +3,6 @@ package com.test.moon.bblind
 import android.app.Activity
 import android.app.Application
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.widget.Toast
 import com.kakao.auth.*
@@ -26,7 +25,7 @@ class GlobalApplication : Application() {
 
     companion object {
 
-        private var mInstance: GlobalApplication? = null
+        var mInstance: GlobalApplication? = null
         @Volatile
         var currentActivity: Activity? = null
             get() {
@@ -44,33 +43,3 @@ class GlobalApplication : Application() {
 
 }
 
-class KakaoSDKAdapter : KakaoAdapter() {
-
-    override fun getSessionConfig(): ISessionConfig {
-        return object : ISessionConfig {
-            override fun getAuthTypes(): Array<AuthType> {
-                return arrayOf(AuthType.KAKAO_LOGIN_ALL)
-            }
-
-            override fun isUsingWebviewTimer(): Boolean {
-                return false
-            }
-
-            override fun isSecureMode(): Boolean {
-                return true
-            }
-
-            override fun getApprovalType(): ApprovalType? {
-                return ApprovalType.INDIVIDUAL
-            }
-
-            override fun isSaveFormData(): Boolean {
-                return true
-            }
-        }
-    }
-
-    override fun getApplicationConfig(): IApplicationConfig {
-        return IApplicationConfig { GlobalApplication.globalApplicationContext }
-    }
-}

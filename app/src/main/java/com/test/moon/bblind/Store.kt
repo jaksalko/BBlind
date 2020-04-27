@@ -3,7 +3,6 @@ package com.test.moon.bblind
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,11 +10,10 @@ import com.anjlab.android.iab.v3.BillingProcessor
 import com.anjlab.android.iab.v3.TransactionDetails
 import android.content.DialogInterface
 import android.os.Debug
-import android.support.v4.app.FragmentActivity
-import android.support.v4.app.FragmentManager
-import android.support.v7.app.AlertDialog
 import android.util.Log
 import android.widget.*
+import androidx.appcompat.app.AlertDialog
+import androidx.fragment.app.Fragment
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 
@@ -29,10 +27,12 @@ class Store : Fragment(),BillingProcessor.IBillingHandler{
     private val storedata = ArrayList<StoreListData>()
     val database : FirebaseDatabase = FirebaseDatabase.getInstance()
     val currentUser = FirebaseAuth.getInstance().currentUser
-    val myRef : DatabaseReference = database.getReference("Account/"+currentUser!!.uid+"/heart")
+    lateinit var myRef : DatabaseReference
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        Log.d("wlgusdnzzz","유저 :"+currentUser?.uid)
+        myRef  = database.getReference("Account/"+currentUser!!.uid+"/heart")
         var fragmentManager = fragmentManager!!.fragments
         bp = BillingProcessor(activity, resources.getString(R.string.license), this)
         bp.initialize()

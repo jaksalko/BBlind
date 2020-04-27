@@ -1,8 +1,9 @@
 package com.test.moon.bblind
 
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
+
 class QnA : AppCompatActivity()
 {
     val arr :Array<String> = arrayOf("위팅을 통해 좋은 인연 만드셨나요? 더 나은 서비스를 제공하도록 노력하는 위팅이 되겠습니다.\n" +

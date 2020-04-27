@@ -1,10 +1,10 @@
 package com.test.moon.bblind
 import android.annotation.SuppressLint
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
 
 import kotlinx.android.synthetic.main.asd.*
 import android.widget.ArrayAdapter
+import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.database.*
 import kotlin.random.Random
 

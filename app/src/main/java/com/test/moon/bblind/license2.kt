@@ -2,8 +2,8 @@ package com.test.moon.bblind
 
 import android.annotation.SuppressLint
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
 
 class license2 : AppCompatActivity()
 {

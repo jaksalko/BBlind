@@ -10,14 +10,13 @@ import android.icu.text.SimpleDateFormat
 import android.os.Build
 import android.os.Bundle
 import android.os.Debug
-import android.support.constraint.solver.widgets.Snapshot
-import android.support.v7.app.AlertDialog
-import android.support.v7.app.AppCompatActivity
 import android.text.TextUtils
 import android.util.Log
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.*
+import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_apply.*
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
@@ -62,9 +61,6 @@ class ApplyActivity : AppCompatActivity()
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_apply)
 
-        val intent : Intent = intent
-        val hot : String = intent.getStringExtra("Subway")
-        Apply_Textview_Subway.setText(hot)
 
         MainActivity.nowAc="apply"
         MainActivity.applyactivity=this
@@ -187,9 +183,8 @@ class ApplyActivity : AppCompatActivity()
                                                 Log.d("aaaaz", "2222")
                                                 var s1 = MainActivity.checkapplylist!!.checklist!![i].split("/")[0]
                                                 var s2 = MainActivity.checkapplylist!!.checklist!![i].split("/")[1]
-                                                var s3 = MainActivity.checkapplylist!!.checklist!![i].split("/")[2]
 
-                                                if (s3.equals(selectdatstr)) {
+                                                if (s2.equals(selectdatstr)) {
 
                                                     Log.d("aaaaz", "3333")
                                                     s4 = true
@@ -203,9 +198,7 @@ class ApplyActivity : AppCompatActivity()
 
                                         if (s4 == true) {
                                             throw NoSuchMethodException("Already Exist")
-                                        } else if (Store.heart < 10) {
-                                            throw ReflectiveOperationException("Not Enough Heart")
-                                        } else if (Apply_Edittext_Introduction.text.toString().length != 5) {
+                                        }else if (Apply_Edittext_Introduction.text.toString().length != 5) {
                                             throw ArithmeticException("Five Introduction")
                                         } else if (Apply_Spinner_Before_Time.selectedItem.toString().toInt() + 1 > Apply_Spinner_After_Time.selectedItem.toString().toInt()) {
 
@@ -213,9 +206,7 @@ class ApplyActivity : AppCompatActivity()
 
                                         } else if (selectdatstr!!.compareTo(strdate!!) <= 0 || selectdatstr.length < 7) {
                                             throw NoSuchElementException("OverDate")
-                                        } else if (Apply_Textview_Subway.text.toString().equals("")) {
-                                            throw CloneNotSupportedException("Please set Venue")
-                                        } else {
+                                        }else {
 
                                             Log.d("aaaaz", "5555")
 
@@ -236,18 +227,17 @@ class ApplyActivity : AppCompatActivity()
 
 
                                             //*********************************************여기서 나와 같은 조건의 상대성별 확인
-                                            MainActivity.checkapplylist!!.checklist!!.add(Apply_Textview_Subway.text.toString() + "/" + Apply_Spinner_PersonNum.selectedItem.toString() + "/" + selectdatstr)
+                                            MainActivity.checkapplylist!!.checklist!!.add(Apply_Spinner_PersonNum.selectedItem.toString() + "/" + selectdatstr)
 
                                             ref.child("Account").child(id!!).child("Myapply").setValue(MainActivity.checkapplylist)
 
 
 
-                                            Applyref.child("SubwayStation").child(Apply_Textview_Subway.text.toString())
-                                                    .child(Apply_Spinner_PersonNum.selectedItem.toString())
+                                            Applyref.child(Apply_Spinner_PersonNum.selectedItem.toString())
                                                     .child(sex!!)
                                                     .push().setValue(iddata)
 
-                                            Hotref.child(Apply_Textview_Subway.text.toString()).child("Count").addListenerForSingleValueEvent(object: ValueEventListener {
+                                            Hotref.child("Count").addListenerForSingleValueEvent(object: ValueEventListener {
                                                 override fun onCancelled(p0: DatabaseError) {
 
 
@@ -264,7 +254,7 @@ class ApplyActivity : AppCompatActivity()
                                                     {
                                                         cnt = 1
                                                     }
-                                                    Hotref.child(Apply_Textview_Subway.text.toString()).child("Count").setValue(cnt)
+                                                    Hotref.child("Count").setValue(cnt)
 
 
                                                 }
@@ -274,7 +264,7 @@ class ApplyActivity : AppCompatActivity()
 
 
 
-                                            Applyref.child("SubwayStation/" + Apply_Textview_Subway.text.toString() + "/" + Apply_Spinner_PersonNum.selectedItem.toString()).child(oppositesex!!).orderByChild("date").equalTo(selectdatstr).limitToFirst(1).addChildEventListener(object : ChildEventListener {
+                                            Applyref.child(Apply_Spinner_PersonNum.selectedItem.toString()).child(oppositesex!!).orderByChild("date").equalTo(selectdatstr).limitToFirst(1).addChildEventListener(object : ChildEventListener {
                                                 override fun onCancelled(p0: DatabaseError) {
                                                 }
 
@@ -315,10 +305,9 @@ class ApplyActivity : AppCompatActivity()
 
 
                                                                 if (findfrom!! <= Apply_Spinner_Before_Time.selectedItem.toString() && findto!! >= Apply_Spinner_Before_Time.selectedItem.toString()
-                                                                        || findfrom!! <= Apply_Spinner_After_Time.selectedItem.toString() && findto!! >= Apply_Spinner_After_Time.selectedItem.toString()) {
+                                                                        || findfrom!! <= Apply_Spinner_After_Time.selectedItem.toString() && findto!! >= Apply_Spinner_After_Time.selectedItem.toString())
+                                                                {
 
-
-                                                                    //시간조건이 겹치지 않음.
 
 
                                                                     //시간 조건이 겹침
@@ -377,14 +366,10 @@ class ApplyActivity : AppCompatActivity()
                                                                                 }
                                                                                 ref.child("Account").child(findname).child("ChatNum").setValue(MainActivity.crdd)
 
-
-
-
-
                                                                                 MainActivity.checkapplylistt = p0.child(findname).child("Myapply").getValue(CheckApplyListData::class.java)!!
 
 
-                                                                                MainActivity.checkapplylistt!!.checklist!!.remove(Apply_Textview_Subway.text.toString() + "/" + Apply_Spinner_PersonNum.selectedItem.toString() + "/" + selectdatstr)
+                                                                                MainActivity.checkapplylistt!!.checklist!!.remove(Apply_Spinner_PersonNum.selectedItem.toString() + "/" + selectdatstr)
 
                                                                                 ref.child("Account").child(findname).child("Myapply").setValue(MainActivity.checkapplylistt)
 
@@ -394,7 +379,7 @@ class ApplyActivity : AppCompatActivity()
 
                                                                                 MainActivity.checkapplylist = p0.child(id!!).child("Myapply").getValue(CheckApplyListData::class.java)!!
 
-                                                                                MainActivity.checkapplylist!!.checklist!!.remove(Apply_Textview_Subway.text.toString() + "/" + Apply_Spinner_PersonNum.selectedItem.toString() + "/" + selectdatstr)
+                                                                                MainActivity.checkapplylist!!.checklist!!.remove(Apply_Spinner_PersonNum.selectedItem.toString() + "/" + selectdatstr)
 
                                                                                 ref.child("Account").child(id!!).child("Myapply").setValue(MainActivity.checkapplylist)
 
@@ -409,7 +394,7 @@ class ApplyActivity : AppCompatActivity()
 
                                                                                 if (selectdatstr!!.length > 7) {
 
-                                                                                    val cr = ChatRoomListData(Apply_Textview_Subway.text.toString(), Apply_Spinner_PersonNum.selectedItem.toString(), selectdatstr!!, MainActivity.ChatRoomNum.toString(), "언행이 바른자가 미인을 얻는다.")
+                                                                                    val cr = ChatRoomListData(Apply_Spinner_PersonNum.selectedItem.toString(), selectdatstr!!, MainActivity.ChatRoomNum.toString(), "언행이 바른자가 미인을 얻는다.")
 
 
 
@@ -428,14 +413,14 @@ class ApplyActivity : AppCompatActivity()
                                                                                 Log.d("zczc", "fcm보낸 후")
 
 
-                                                                                Log.d("zczc", Apply_Textview_Subway.text.toString() + "/" + Apply_Spinner_PersonNum.selectedItem.toString() + "/" + id)
-                                                                                Log.d("zczc", Apply_Textview_Subway.text.toString() + "/" + Apply_Spinner_PersonNum.selectedItem.toString() + "/" + find!!.name)
+                                                                                Log.d("zczc", Apply_Spinner_PersonNum.selectedItem.toString() + "/" + id)
+                                                                                Log.d("zczc", Apply_Spinner_PersonNum.selectedItem.toString() + "/" + find!!.name)
                                                                                 Log.d("zczc", id + findname)
                                                                                 Log.d("zczc", "delete")
 
 
 
-                                                                                ref.child("Apply").child("SubwayStation").child(Apply_Textview_Subway.text.toString())
+                                                                                ref.child("Apply")
                                                                                         .child(Apply_Spinner_PersonNum.selectedItem.toString()).child(sex!!).orderByChild("date").equalTo(selectdatstr).addListenerForSingleValueEvent(object : ValueEventListener {
                                                                                             override fun onCancelled(p0: DatabaseError) {
 
@@ -464,7 +449,7 @@ class ApplyActivity : AppCompatActivity()
                                                                                             }
 
                                                                                         })
-                                                                                ref.child("Apply").child("SubwayStation").child(Apply_Textview_Subway.text.toString())
+                                                                                ref.child("Apply")
                                                                                         .child(Apply_Spinner_PersonNum.selectedItem.toString()).child(oppositesex!!).orderByChild("date").equalTo(selectdatstr).addListenerForSingleValueEvent(object : ValueEventListener {
                                                                                             override fun onCancelled(p0: DatabaseError) {
 
@@ -518,7 +503,7 @@ class ApplyActivity : AppCompatActivity()
                                                                                         cnt-=2
 
 
-                                                                                        Hotref.child(Apply_Textview_Subway.text.toString()).child("Count").setValue(cnt)
+                                                                                        Hotref.child("Count").setValue(cnt)
 
                                                                                     }
                                                                                 })
@@ -574,9 +559,6 @@ class ApplyActivity : AppCompatActivity()
                                     } catch (e: ArrayStoreException) {
                                         Toast.makeText(this@ApplyActivity, "시간을 설정해주세요.", Toast.LENGTH_SHORT).show()
 
-
-                                    } catch (e: CloneNotSupportedException) {
-                                        Toast.makeText(this@ApplyActivity, "지하철역을 설정해주세요.", Toast.LENGTH_SHORT).show()
 
                                     } catch (e: NoSuchElementException) {
                                         Toast.makeText(this@ApplyActivity, "이미 지난 날짜입니다.", Toast.LENGTH_SHORT).show()

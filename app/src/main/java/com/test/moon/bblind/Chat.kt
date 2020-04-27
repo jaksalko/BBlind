@@ -4,7 +4,6 @@ package com.test.moon.bblind
 import android.content.Context
 import android.content.Intent
 import android.util.Log
-import android.support.v7.app.AlertDialog
 import android.os.Bundle
 import android.text.TextUtils
 import android.view.LayoutInflater
@@ -13,6 +12,7 @@ import android.view.ViewGroup
 import android.widget.*
 
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
 import com.google.android.gms.auth.api.Auth
 import com.google.android.gms.common.SignInButton
 import com.google.android.gms.common.api.GoogleApiClient
@@ -22,8 +22,6 @@ import com.kakao.usermgmt.UserManagement
 import com.kakao.usermgmt.callback.LogoutResponseCallback
 import kotlinx.android.synthetic.main.activity_chattingroom.*
 import org.json.JSONObject
-import android.support.v4.app.Fragment
-import android.support.v7.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_chattingroom.view.*
 import java.net.HttpURLConnection
 import java.net.URL

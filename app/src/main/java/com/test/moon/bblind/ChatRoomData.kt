@@ -8,11 +8,7 @@ class ChatRoomData
 
 
 
-    constructor(chatroom : ArrayList<String>,token : ArrayList<String>)
-    {
-        this.ChatRoom = chatroom
-        this.Token = token
-    }
+
     constructor()
     {}
 

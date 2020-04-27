@@ -1,148 +1,144 @@
 package com.test.moon.bblind
 
 import android.app.Activity
+import android.app.Application
 import android.app.NotificationManager
 import android.content.Context
 import android.content.Intent
-import android.content.pm.PackageInfo
-import android.content.pm.PackageManager
-import android.databinding.DataBindingUtil
-import android.graphics.Paint
 import android.icu.text.SimpleDateFormat
 import android.os.Build
 import android.os.Bundle
-import android.os.Looper
-import android.support.v7.app.AppCompatActivity
-import android.support.v7.widget.Toolbar
 import android.util.Log
 import android.view.View
-import android.widget.Button
-import android.widget.ImageView
-import android.widget.TextView
-import android.widget.LinearLayout
-
 import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.Volley
-import com.bumptech.glide.Glide
-import com.google.android.gms.tasks.Continuation
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.gms.tasks.Task
 import com.google.android.gms.tasks.TaskCompletionSource
 import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
-import com.test.moon.bblind.databinding.ActivityMainBinding
 import com.kakao.auth.ISessionCallback
 import com.kakao.auth.Session
-import com.kakao.usermgmt.LoginButton
 import com.kakao.usermgmt.UserManagement
-import com.kakao.usermgmt.callback.LogoutResponseCallback
 import com.kakao.util.exception.KakaoException
-
-import android.os.Handler
-import android.text.SpannableString
-import android.text.style.UnderlineSpan
-import android.util.Base64
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import com.android.volley.*
-import com.google.firebase.analytics.FirebaseAnalytics
+import com.facebook.AccessToken
+import com.facebook.CallbackManager
+import com.facebook.FacebookCallback
+import com.facebook.FacebookException
+import com.facebook.login.LoginResult
+import com.google.firebase.auth.FacebookAuthProvider
 import com.google.firebase.database.*
-import kotlinx.android.synthetic.main.activity_apply.*
-
+import com.kakao.network.ErrorResult
+import com.kakao.usermgmt.callback.MeV2ResponseCallback
+import com.kakao.usermgmt.response.MeV2Response
+import kotlinx.android.synthetic.main.activity_main.*
 import org.json.JSONObject
-import java.security.MessageDigest
-import java.security.NoSuchAlgorithmException
-import java.security.Signature
 import java.util.*
-import kotlin.collections.ArrayList
 
 class MainActivity : AppCompatActivity() {
-    var binding: ActivityMainBinding? = null
-    lateinit var loginButton : LoginButton
     private var mAuth: FirebaseAuth?  = FirebaseAuth.getInstance()
     private var user : FirebaseUser?= mAuth!!.currentUser
     val database : FirebaseDatabase? = FirebaseDatabase.getInstance()
     val myRef : DatabaseReference = database!!.reference
-    var auth : FirebaseAuth?=null
+    var auth : FirebaseAuth?=FirebaseAuth.getInstance()
+
+    var mCallbackManager : CallbackManager?=null
     var myuid : String? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         setContentView(R.layout.activity_main)
-
-
-
-
-
         activity = this
         //어플의 모든 푸시알림 삭제
         val  notifiyMgr : NotificationManager= getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
-        notifiyMgr.cancelAll();
-
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
-
-
-        loginButton = findViewById<View>(R.id.login_button) as LoginButton
-
-        auth = FirebaseAuth.getInstance()
+        notifiyMgr.cancelAll()
 
 
 
-        Log.d("crdcheck","first"+auth!!.currentUser)
+
         if(auth!!.currentUser==null)
         {
             Log.d("crdcheck","1111"+auth!!.currentUser)
             myuid = null
-            loginButton.visibility=View.VISIBLE
+            login_button.visibility=View.VISIBLE
 
         }
         else
         {
 
-            loginButton.visibility=View.GONE
+            DirectLobby(auth!!.currentUser?.uid!!)
+            login_button.visibility=View.GONE
 
             myuid = auth!!.currentUser!!.uid
         }
         updateUI()
 
-       /* myRef.addListenerForSingleValueEvent(object: ValueEventListener {
-            override fun onCancelled(p0: DatabaseError) {
+
+        mCallbackManager = CallbackManager.Factory.create()
+
+        login_button!!.setReadPermissions("email")
+
+        login_button!!.registerCallback(mCallbackManager,object : FacebookCallback<LoginResult> {
+
+            override fun onSuccess(result: LoginResult?) {
+                //페이스북 로그인 성공
+
+                handleFacebookAccessToken(result!!.accessToken)
+
+                Toast.makeText(this@MainActivity,"로그인 성공",Toast.LENGTH_LONG).show()
+            }
+            override fun onCancel() {
+                //페이스북 로그인 취소
+                Toast.makeText(this@MainActivity,"로그인이 취소되었습니다.",Toast.LENGTH_SHORT).show()
             }
 
-            override fun onDataChange(p0: DataSnapshot) {
-
-
-
-                if(p0.child("Account").child(auth!!.currentUser!!.uid).exists())
-                {
-                    Log.d("crdcheck","2222"+auth!!.currentUser)
-                    loginButton.visibility=View.GONE
-                    myuid = auth!!.currentUser!!.uid
-                }
-                Log.d("crdcheck","second"+auth!!.currentUser)
-
+            override fun onError(error: FacebookException?) {
+                //페이스북 로그인 실패
+                //Log.d("페북 로그인 에러",error.toString())
+                Toast.makeText(this@MainActivity,"로그인에 실패하었습니다.",Toast.LENGTH_SHORT).show()
             }
-        })*/
+        })
 
 
-        Session.getCurrentSession().addCallback(KakaoSessionCallback())
+
+
     }
 
 
-    override fun onStart() {
-        super.onStart()
+
+    fun handleFacebookAccessToken(token : AccessToken)
+    {
+        //페이스북 로그인
+
+            val credential = FacebookAuthProvider.getCredential(token.token)
+            auth!!.signInWithCredential(credential)
+                    .addOnCompleteListener(this) { task ->
+                        if (task.isSuccessful) {
+                            // Sign in success, update UI with the signed-in user's information
+
+                            Toast.makeText(this@MainActivity,"Authentication sucesseded.",Toast.LENGTH_LONG).show()
+                            user = auth!!.currentUser
+                            DirectSignUp()
+                        } else {
+                            // If sign in fails, display a message to the user.
+                            Toast.makeText(this@MainActivity,"Authentication failed.",Toast.LENGTH_LONG).show()
+
+                        }
+                    }
+
 
     }
-
     /**
      * Update UI based on Firebase's current user. Show Login Button if not logged in.
      */
     private fun updateUI() {
         Log.d("crdcheck","updateUI"+myuid)
         if (!myuid.equals(null)) {
-            loginButton.visibility = View.INVISIBLE
-            binding!!.setCurrentUser(auth!!.currentUser)
 
 
             /**
@@ -164,7 +160,6 @@ class MainActivity : AppCompatActivity() {
              * SHOW LOGO FOR 2SEC
              */
 
-            loginButton.visibility = View.VISIBLE
 
         }
     }
@@ -173,15 +168,14 @@ class MainActivity : AppCompatActivity() {
      * OnActivityResult() should be overridden for Kakao Login because Kakao Login uses startActivityForResult().
      */
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+            mCallbackManager!!.onActivityResult(requestCode, resultCode, data)
         super.onActivityResult(requestCode, resultCode, data)
-        Session.getCurrentSession().handleActivityResult(requestCode, resultCode, data)
+
+
+
+
     }
 
-    /**
-     *
-     * @param kakaoAccessToken Access token retrieved after successful Kakao Login
-     * @return Task object that will call validation server and retrieve firebase token
-     */
     private fun getFirebaseJwt(kakaoAccessToken: String): Task<String> {
         val source = TaskCompletionSource<String>()
 
@@ -243,7 +237,6 @@ class MainActivity : AppCompatActivity() {
 
                         var s1 = MainActivity.checkapplylist!!.checklist!![i].split("/")[0]
                         var s2 = MainActivity.checkapplylist!!.checklist!![i].split("/")[1]
-                        var s3 = MainActivity.checkapplylist!!.checklist!![i].split("/")[2]
 
 
                         val today = Date()
@@ -258,7 +251,7 @@ class MainActivity : AppCompatActivity() {
                         }
 
 
-                        if(s3.compareTo(strdate!!)<0)
+                        if(s2.compareTo(strdate!!)<0)
                         {
 
 
@@ -442,6 +435,96 @@ class MainActivity : AppCompatActivity() {
     /**
      * Session callback class for Kakao Login. OnSessionOpened() is called after successful login.
      */
+
+
+    inner class SessionCallback(application : Application) : ISessionCallback {
+
+        val TAG = "SessionCallback"
+        val app  = application
+        var sf = app.getSharedPreferences("login",0)
+        var edit = sf.edit()
+        val database : FirebaseDatabase? = FirebaseDatabase.getInstance()
+        val myRef : DatabaseReference = database!!.reference
+
+
+        override fun onSessionOpenFailed(exception: KakaoException?) {
+
+        }
+
+        override fun onSessionOpened() {
+            UserManagement.getInstance().me(object : MeV2ResponseCallback() {
+
+
+                override fun onFailure(errorResult: ErrorResult?) {
+                    Log.e(TAG,"Fail")
+                }
+
+                override fun onSessionClosed(errorResult: ErrorResult?) {
+                    Log.d(TAG,"closed")
+                }
+
+                override fun onSuccess(result: MeV2Response?) {
+
+                    myRef.addListenerForSingleValueEvent(object: ValueEventListener {
+                        override fun onCancelled(p0: DatabaseError) {
+                        }
+
+                        override fun onDataChange(p0: DataSnapshot) {
+                            if(!p0.child("Account").child(result?.id.toString()).exists()) {
+                                //회원가입을 하지 않았으면
+                                //Account에 내 id가 없으면
+                                Log.d("wlgusdnzzz","Account에 없다"+result?.id.toString())
+                                var aauth = FirebaseAuth.getInstance()
+
+
+
+                                aauth!!.signInAnonymously()
+                                        .addOnCompleteListener(this@MainActivity,object : OnCompleteListener<AuthResult?> {
+                                            override fun onComplete(p0: Task<AuthResult?>) {
+
+                                                if(p0.isSuccessful)
+                                                {
+                                                    edit.putInt("id", result!!.id.toInt())
+                                                    Log.d("wlgusdnzzz", "익명가입성공")
+                                                    edit.commit()
+                                                    //DirectSignUp()
+
+                                                }
+                                                else
+                                                {
+                                                    Log.d("wlgusdnzzz", "익명가입실패")
+                                                }
+
+
+
+                                            }
+                                        })
+
+
+                            }
+                            else
+                            {
+                                DirectLobby(result!!.id.toString())
+                            }
+
+
+
+                        }
+                    })
+
+
+
+                    }
+            })
+        }
+
+
+
+
+
+
+    }
+
     private inner class KakaoSessionCallback : ISessionCallback {
         override fun onSessionOpened() {
             //Toast.makeText(applicationContext, "Successfully logged in to Kakao. Now creating or updating a Firebase User.", Toast.LENGTH_LONG).show()

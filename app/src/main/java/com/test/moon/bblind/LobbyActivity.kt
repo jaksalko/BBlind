@@ -5,19 +5,6 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.os.PersistableBundle
-import android.support.design.widget.FloatingActionButton
-import android.support.design.widget.NavigationView
-import android.support.design.widget.TabLayout
-import android.support.v4.app.Fragment
-import android.support.v4.app.FragmentManager
-import android.support.v4.app.FragmentStatePagerAdapter
-import android.support.v4.view.GravityCompat
-import android.support.v4.view.ViewPager
-import android.support.v4.widget.DrawerLayout
-import android.support.v7.app.ActionBarDrawerToggle
-import android.support.v7.app.AlertDialog
-import android.support.v7.app.AppCompatActivity
-import android.support.v7.widget.Toolbar
 import android.util.Log
 import android.view.MenuItem
 import android.view.View
@@ -25,6 +12,16 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.GravityCompat
+import androidx.drawerlayout.widget.DrawerLayout
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.FragmentStatePagerAdapter
+import androidx.viewpager.widget.ViewPager
+import com.google.android.material.navigation.NavigationView
+import com.google.android.material.tabs.TabLayout
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
@@ -39,11 +36,11 @@ import com.kakao.usermgmt.callback.LogoutResponseCallback
 import com.kakao.util.helper.log.Logger
 import com.test.moon.bblind.MainActivity.Companion.activity
 
-class LobbyActivity: AppCompatActivity(),NavigationView.OnNavigationItemSelectedListener {
+class LobbyActivity: AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
     private val backpress : BackPress = BackPress(this)
     private lateinit var adapter : ViewPagerAdapter
-    internal val tabIcons = intArrayOf(R.drawable.homed,R.drawable.chatd, R.drawable.heartd, R.drawable.gamed)
+    internal val tabIcons = intArrayOf(R.drawable.homed,R.drawable.chatd,R.drawable.gamed)
     private var viewPager: ViewPager? = null
     private var tabLayout: TabLayout? = null
     val database : FirebaseDatabase? = FirebaseDatabase.getInstance()
@@ -71,7 +68,7 @@ class LobbyActivity: AppCompatActivity(),NavigationView.OnNavigationItemSelected
     override fun onCreate(savedInstanceState: Bundle?) {
 
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_lobby)
+        setContentView(R.layout.activity_lobby2)
         navbtn = findViewById(R.id.navbtn)
         heartNum = findViewById(R.id.Lobby_Macaron)
 
@@ -143,7 +140,7 @@ class LobbyActivity: AppCompatActivity(),NavigationView.OnNavigationItemSelected
 
     override fun onBackPressed()
     {
-        val activity = MainActivity.activity as MainActivity
+        val activity = activity as MainActivity
         activity.finish()
 
 
@@ -287,7 +284,7 @@ class LobbyActivity: AppCompatActivity(),NavigationView.OnNavigationItemSelected
     }
 
     private fun setupTabIcons() {
-        for(i in 0..3) {
+        for(i in 0..2) {
             val view1 = layoutInflater.inflate(R.layout.customtab, null) as View
             view1.findViewById<ImageView>(R.id.icon).setBackgroundResource(tabIcons[i])
             tabLayout!!.getTabAt(i)!!.setCustomView(view1)
@@ -299,7 +296,6 @@ class LobbyActivity: AppCompatActivity(),NavigationView.OnNavigationItemSelected
         adapter = ViewPagerAdapter(supportFragmentManager)
         adapter.addFrag(Home(), "HOME")
         adapter.addFrag(ChatRoom(), "CHAT")
-        adapter.addFrag(Store(), "STORE")
         adapter.addFrag(Game(),"GAME")
         //adapter.addFrag(heart(), "HEART")
         viewPager!!.adapter = adapter
@@ -310,7 +306,7 @@ class LobbyActivity: AppCompatActivity(),NavigationView.OnNavigationItemSelected
         Log.d("Activity","InActivity")
         super.onActivityResult(requestCode, resultCode, data)
         val fragmentManager = supportFragmentManager
-        val fragment = adapter.getItem(2)
+        val fragment = adapter.getItem(3)
         if (fragment != null) {
             Log.d("Activity","toFragment")
             (fragment as Store).onActivityResult(requestCode, resultCode, data)
